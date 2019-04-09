@@ -75,7 +75,7 @@ class CliqueOracle:
     def find_biggest_clique(self):
         """Finds the biggest clique of validators committed to target estimate."""
 
-        # # Do not have finality if less than half have candidate_estimate.
+        # Do not have finality if less than half have candidate_estimate.
         if sum({v.weight for v in self.candidates}) <= sum({v.weight for v in self.validators}) / 2:
             return set(), 0
 
