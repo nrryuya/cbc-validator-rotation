@@ -8,9 +8,9 @@ if TYPE_CHECKING:
 class Justification:
     def __init__(
         self,
-        latest_messages: Dict['Validator', int] = dict()
+        latest_message_hashes: Dict['Validator', int] = dict()
     ):
-        self.latest_messages: Dict[Validator, int] = latest_messages
+        self.latest_message_hashes: Dict[Validator, int] = latest_message_hashes
 
     def dump(self, state: 'State'):
         return [
@@ -18,5 +18,5 @@ class Justification:
                 "sender": v.name,
                 "message_hash": message_hash
             }
-            for v, message_hash in self.latest_messages.items()
+            for v, message_hash in self.latest_message_hashes.items()
         ]

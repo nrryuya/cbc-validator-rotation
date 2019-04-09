@@ -32,6 +32,7 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
 
         self.broadcast_from_random_validator()
         self.all_validators_receive_messages()
+        self.calc_clique_size()
 
         self.ticker.tick()
         return self.network
@@ -46,3 +47,6 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
     def all_validators_receive_messages(self):
         for receiver in self.network.validator_set.all():
             self.network.receive(receiver)
+
+    def calc_clique_size(self):
+        self.network.update_clique_size()

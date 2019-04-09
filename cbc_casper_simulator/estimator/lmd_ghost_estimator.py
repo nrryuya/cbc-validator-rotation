@@ -30,7 +30,7 @@ class LMDGhostEstimator:
     def score(cls, state: State, justification: Justification) -> Dict[Block, float]:
         scores: Dict[Block, float] = dict()
         store: Store = state.store
-        for v, m in justification.latest_messages.items():
+        for v, m in justification.latest_message_hashes.items():
             current_block = store.to_block(m)
             while not current_block.is_genesis():
                 scores[current_block] = scores.get(
@@ -39,30 +39,3 @@ class LMDGhostEstimator:
             scores[store.genesis.estimate] = scores.get(
                 store.genesis.estimate, 0) + v.weight
         return scores
-
-    @classmethod
-    def dump(cls, state: State, justification: Justification):
-        scores: Dict[Block, float] = cls.score(state, justification)
-        # TODO: more excellent implementation
-        dumped_state = state.dump()
-        for block, score in scores.items():
-            for i, message in enumerate(dumped_state['messages']):
-                if message['estimate']['hash'] == block.hash:
-                    dumped_state['messages'][i]['score'] = score
-
-        estimate: Block = cls.estimate(state, justification).dump()
-        estimate['parent_message_hash'] = state.store.to_message(
-            estimate['parent_hash']).hash
-        return {
-            "estimate": estimate,
-            "last_finalized_message": state.store.to_message(state.store.last_finalized_block).hash,
-            "latest_messages": justification.dump(state),
-            "validators": [
-                {
-                    "name": v.name,
-                    "weight": v.weight
-                }
-                for v in justification.latest_messages.keys()
-            ],
-            "state": dumped_state
-        }

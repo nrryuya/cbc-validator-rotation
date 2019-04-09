@@ -20,7 +20,7 @@ class MessageValidator:
 
     @classmethod
     def justification_is_justified(cls, state: 'State', justification: Justification) -> Result[Error, bool]:
-        not_justified = [h for h in justification.latest_messages.values(
+        not_justified = [h for h in justification.latest_message_hashes.values(
             ) if not state.store.justified(h)]
 
         if len(not_justified) > 0:

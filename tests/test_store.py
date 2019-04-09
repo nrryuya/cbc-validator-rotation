@@ -13,7 +13,7 @@ def test_store():
     store = Store()
     store.add(genesis)
     b1 = Block(genesis.estimate.hash)
-    child = Message(validator, b1, Justification(store.latest_messages()), 0)
+    child = Message(validator, b1, Justification(store.latest_message_hashes()), 0)
     store.add(child)
 
     message_history = {

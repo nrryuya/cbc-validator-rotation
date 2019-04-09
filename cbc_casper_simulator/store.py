@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import Dict, List, Optional
-from cbc_casper_simulator.message import Message
-from cbc_casper_simulator.block import Block
 from typing import TYPE_CHECKING
 from typing import Union
+
+from cbc_casper_simulator.message import Message
+from cbc_casper_simulator.block import Block
 if TYPE_CHECKING:
     from cbc_casper_simulator.validator import Validator
 
@@ -89,6 +90,16 @@ class Store:
 
     def genesis_block(self) -> Block:
         return self.genesis.estimate
+
+    def is_agreeing(self, block: Block, message: Message):
+        """Returns True if self is an ancestor of block."""
+        head: Block = message.estimate
+        while not head.is_genesis():
+            if head == block:
+                return True
+            head = self.parent_block(head)
+
+        return False
 
     def dump(self, state=None):
         return [m.dump(state, self.parent_message(m.hash)) for m in self.messages.values()]

@@ -14,13 +14,14 @@ class Message:
         sender: Validator,
         estimate: Block,
         justification: Justification,
-        sender_slot: int  # FIXME: Move this to Store
+        sender_slot: int,  # FIXME: Move this to Store,
     ):
         self.sender: Validator = sender
         self.estimate: Block = estimate
         self.justification: Justification = justification
         self.sender_slot: int = sender_slot
         self.receiver_slot: int = -1  # FIXME: Move this to Store
+        self.clique_size: float = 0  # FIXME: Move this to Store
         # TODO: implement
         self.hash: int = r.randint(1, 100000000000000)
 
@@ -42,6 +43,7 @@ class Message:
             "justification": self.justification.dump(state),
             "sender_slot": self.sender_slot,
             "receiver_slot": self.receiver_slot,
+            "clique_size": self.clique_size,
             "hash": self.hash,
             "parent_hash": parent_hash
         }

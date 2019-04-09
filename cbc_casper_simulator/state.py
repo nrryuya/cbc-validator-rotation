@@ -2,7 +2,6 @@ from cbc_casper_simulator.justification import Justification
 from cbc_casper_simulator.message import Message
 from cbc_casper_simulator.store import Store
 from cbc_casper_simulator.message_validator import MessageValidator
-from cbc_casper_simulator.safety_oracle.clique_oracle import CliqueOracle
 from cbc_casper_simulator.util.ticker import Ticker
 from cbc_casper_simulator.error import Error
 from typing import Optional

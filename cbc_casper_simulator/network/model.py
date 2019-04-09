@@ -1,10 +1,12 @@
+from typing import Dict, List
+
 from cbc_casper_simulator.validator_set import ValidatorSet
 from cbc_casper_simulator.validator import Validator
 from cbc_casper_simulator.message import Message
 from cbc_casper_simulator.util.ticker import Ticker
 from cbc_casper_simulator.network.packet import Packet
 from cbc_casper_simulator.network.delay import RandomDelay as Delay
-from typing import Dict, List
+from cbc_casper_simulator.safety_oracle.clique_oracle import CliqueOracle
 
 DELAY_MIN = 0
 DELAY_MAX = 3
@@ -39,6 +41,14 @@ class Model:
         for receiver in self.validator_set.all():
             if sender != receiver:  # NOTE: Sender already received this message in broadcast_from_random_validator()
                 self.send(message, sender, receiver)
+
+    def update_clique_size(self):
+        for validator in self.validator_set.validators:
+            for message in validator.state.store.messages.values():
+                if message.is_genesis():
+                    continue
+                clique_oracle = CliqueOracle(message.estimate, validator.state, self.validator_set)
+                message.clique_size = clique_oracle.biggest_clique_weight()
 
     def validator_rotation(self, rotation_ratio: int):
         # FIXME: Now, we assume Older validators exit for simplicity of visualization
