@@ -67,3 +67,5 @@ pytest
 - [CBC Casper paper](https://github.com/cbc-casper/cbc-casper-paper)
 - [CBC Caspre Wiki FAQ](https://github.com/ethereum/cbc-casper/wiki/FAQ)
 
+## Acknowledgement
+We thank Aditya Asgaonkar and Vitalik Buterin for the feedbacks to [our original post](https://ethresear.ch/t/validator-rotation-in-cbc-casper/5200).
