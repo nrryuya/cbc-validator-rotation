@@ -54,12 +54,12 @@ class CliqueOracle:
 
             # there are no blocks from val2, that val1 has not seen;
             # that might change validators' estimate.
-            if self.no_later_disagreeing(val2, v2_msg_in_v1_view):
+            if not self.no_later_disagreeing(val2, v2_msg_in_v1_view):
                 continue
 
             # and if there are no blocks from val1, that val2 has not seen,
             # that might change val2's estimate.
-            if self.no_later_disagreeing(val1, v1_msg_in_v2_view):
+            if not self.no_later_disagreeing(val1, v1_msg_in_v2_view):
                 continue
 
             edges.append((val1, val2))
