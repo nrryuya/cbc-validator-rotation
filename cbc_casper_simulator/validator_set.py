@@ -10,7 +10,9 @@ class ValidatorSet:
         assert len(validators) > 0, "At least one validator is required."
         # assert len(validators) > 0, "At least one validator is required."
         self.validators = validators
-        self.genesis = Message.genesis(r.choice(self.validators))  # FIXME: Why we pick up a sender of genesis?
+
+        # FIXME: Genesis block should be in states by default
+        self.genesis = Message.genesis(r.choice(self.validators))
 
         # Add genesis message to all validators
         for validator in self.validators:

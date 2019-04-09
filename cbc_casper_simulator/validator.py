@@ -13,7 +13,7 @@ class Validator:
             self,
             name: str,
             initial_weight: float,
-            ticker: Ticker  # FIXME: Remove local ticker after we remove sender_slot and receiver_slot from message
+            ticker: Ticker
     ):
         self.name: str = name
         self.weight: float = initial_weight

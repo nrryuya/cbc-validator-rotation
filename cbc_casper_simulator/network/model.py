@@ -44,22 +44,29 @@ class Model:
         for i in range(self.validator_num - len(validators)):
             validator = Validator("v{}.{}".format(self.ticker.current(), i), 1.0, self.ticker)
 
+            # Add genesis message FIXME: Add genesis as default
             res = validator.add_message(self.validator_set.genesis)
             assert res.is_ok(), res.value
 
             delay = Delay.get(1, 2)
-            latest_arrival_slot = self.ticker.current() - delay
-            # NOTE: No reordering for new validator
-            for broadcast_slot in range(self.ticker.current()):
-                broadcast_message = self.broadcast_slot_to_message[broadcast_slot]
-                if broadcast_slot <= latest_arrival_slot:
-                    # FIXME: Reordering occur here?
-                    res = validator.add_message(broadcast_message)
-                    assert res.is_ok()
-                    continue
-                self.add_message_to_be_arrived(validator, broadcast_slot + delay + 1, broadcast_message)
+            # Do simulation of message arrival from the start for new validator
+            for past_slot in range(self.ticker.current()):
+                past_message = self.broadcast_slot_to_message[past_slot]
+                # Sending in past
+                arrival_slot = past_slot + Delay.get(1, 2)
+                self.add_message_to_be_arrived(validator, arrival_slot, past_message)
+
+                # Receiving in past
+                messages = self.arrival_slot_to_messages.get(validator, dict()).get(self.ticker.current(), [])
+                for message in messages:
+                    res = validator.add_message(message)
+                    if not res.is_ok():
+                        # If the message is not valid, skip that for the next round (assuming the reason is reordering)
+                        self.add_message_to_be_arrived(validator, past_slot + 1, message)
 
             validators.append(validator)
+
+        self.validator_set = ValidatorSet(validators)
 
     def add_message_or_pending(self, receiver: Validator, message: Message):
         res = receiver.add_message(message)
