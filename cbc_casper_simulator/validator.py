@@ -7,7 +7,6 @@ from cbc_casper_simulator.estimator.lmd_ghost_estimator import LMDGhostEstimator
 from cbc_casper_simulator.util.ticker import Ticker
 from cbc_casper_simulator.error import Error
 from typing import Optional
-import random as r
 from result import Result
 
 

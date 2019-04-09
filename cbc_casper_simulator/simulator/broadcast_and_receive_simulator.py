@@ -39,7 +39,7 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
         return self.network
 
     def broadcast_from_random_validator(self):
-        rn: int = r.randint(0, self.config.validator_num - 1)
+        rn: int = r.randint(0, self.config.validator_num - 1)  # Global random oracle for block proposer election
         for validator in self.network.validator_set.validators:
             message: Message = validator.create_message(rn)
             if not message:  # This validator is not the proposer in this slot
