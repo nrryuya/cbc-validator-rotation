@@ -48,7 +48,7 @@ class Model:
             for message in validator.state.store.messages.values():
                 if message.is_genesis():
                     continue
-                clique_oracle = CliqueOracle(message.estimate, validator.state, self.validator_set)
+                clique_oracle = CliqueOracle(message.estimate, validator.state)
                 message.clique_size = clique_oracle.biggest_clique_weight()
 
     def validator_rotation(self, validators: List[Validator], name_prefix: str) -> List[Validator]:

@@ -6,21 +6,20 @@ from cbc_casper_simulator.state import State
 from cbc_casper_simulator.block import Block
 from cbc_casper_simulator.message import Message
 from cbc_casper_simulator.validator import Validator
-from cbc_casper_simulator.validator_set import ValidatorSet
 
 
 # Based on: https://github.com/ethereum/cbc-casper/blob/master/casper/safety_oracles/clique_oracle.py
 class CliqueOracle:
     """A clique safety oracle detecting safety from validators committed to an estimate."""
 
-    def __init__(self, block: Block, state: State, validator_set: ValidatorSet):
+    def __init__(self, block: Block, state: State):
         if block is None:
             raise Exception("cannot decide if safe without an estimate")
 
         self.block: Block = block
         self.state: State = state
         # FIXME: Remove equivocating validators
-        self.validators: List[Validator] = validator_set.validators
+        self.validators: List[Validator] = block.active_validators
         # FIXME: Add latest_message member to Store
         self.latest_messages: Dict[Validator, Message] = state.store.latest_messages()
 
