@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterator
+from typing import Iterator, Dict
 import random as r
 
 from cbc_casper_simulator.validator_set import ValidatorSet
@@ -14,11 +14,13 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
     A simulator where at each slot, a single validator chosen randomly sends a message and all validators receive
     messages w.r.t. network latency.
     """
+
     def __init__(self, config: Config):
         self.config = config
         self.ticker = Ticker()
         self.network = NetworkModel(ValidatorSet.with_equal_weight(config.validator_num, self.ticker),
                                     config.validator_num, config.rotation_ratio, self.ticker)
+        self.checkpoint_rotation_count: Dict[int, int] = dict()
 
     def __iter__(self):
         return self
@@ -44,7 +46,14 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
                 # FIXME: Remove this validator ("go offline") if she is confident of the success of exit
                 continue
             if message.estimate.height > 0 and message.estimate.height % self.config.checkpoint_interval == 0:
-                message.estimate.active_validators = self.network.validator_rotation(message.estimate.active_validators)
+                self.checkpoint_rotation_count.setdefault(message.estimate.height, 0)
+                message.estimate.active_validators = self.network.validator_rotation(
+                    message.estimate.active_validators,
+                    "{}.{}".format(int(message.estimate.height / self.config.checkpoint_interval),
+                                   self.checkpoint_rotation_count[message.estimate.height]))
+
+                self.checkpoint_rotation_count[message.estimate.height] += 1
+
             res = validator.add_message(message)
             assert res.is_ok(), res.value
             self.network.broadcast(message, validator)

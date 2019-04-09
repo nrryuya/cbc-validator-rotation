@@ -51,13 +51,13 @@ class Model:
                 clique_oracle = CliqueOracle(message.estimate, validator.state, self.validator_set)
                 message.clique_size = clique_oracle.biggest_clique_weight()
 
-    def validator_rotation(self, validators: List[Validator]) -> List[Validator]:
+    def validator_rotation(self, validators: List[Validator], name_prefix: str) -> List[Validator]:
         # FIXME: Now, we assume older validators exit for simplicity of visualization
         validators: List[Validator] = validators[int(self.validator_num * self.rotation_ratio) + 1:]
 
         new_validators: List[Validator] = []
         for i in range(self.validator_num - len(validators)):
-            validator = Validator("v{}.{}".format(self.ticker.current(), i), 1.0, self.ticker)
+            validator = Validator("v{}.{}".format(name_prefix, i), 1.0, self.ticker)
 
             # Add genesis message FIXME: Add genesis as default
             res = validator.add_message(self.validator_set.genesis)

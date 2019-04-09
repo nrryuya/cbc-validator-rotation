@@ -27,7 +27,6 @@ class Block:
         return self.parent_hash is None
 
     def dump(self):
-        # TODO: Validator name list
         return {
             "height": self.height,
             "parent_hash": self.parent_hash,

@@ -21,7 +21,6 @@ class Validator:
         self.name: str = name
         self.weight: float = initial_weight
         self.state = State(ticker)  # FIXME: How about passing ticker to add_message and remove ticker from State?
-        self.hash: int = r.randint(1, 100000000000000)  # FIXME: calc hash
 
     def create_message(self, rn: int) -> Optional[Message]:
         justification: Justification = self.state.justification()
@@ -49,7 +48,7 @@ class Validator:
         }
 
     def __eq__(self, other: Validator):
-        return self.hash == other.hash
+        return self.name == other.name
 
     def __hash__(self):
-        return self.hash
+        return hash(self.name)
