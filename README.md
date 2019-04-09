@@ -1,6 +1,6 @@
 # CBC Casper Validator Rotation
 
-Simulation of validator rotation in CBC Casper
+Simulation of validator rotation in CBC Casper @EDCON HACK 2019
 
 ## Introduction
 CBC Casper is one of the cutting-edge research of blockchain consensus protocol.
@@ -35,13 +35,16 @@ From this, an efficient algorithm for the verification of LMD GHOST called [Bitw
 I.e. If the current block height is `H`, we use Bitwise LMD GHOST for `floor(H/N) + 1` times. 
 
 
+## Getting started
 ### Requirements
 * Python 3.7.2 or newer
 
-### Getting started
-
 ```
 pip install -r requirements.txt
+```
+
+### Simulation
+```
 python main.py
 ```
 
@@ -60,7 +63,7 @@ pytest
 ```
  
  
-### Resources
+## Resources
 - [CBC Casper paper](https://github.com/cbc-casper/cbc-casper-paper)
 - [CBC Caspre Wiki FAQ](https://github.com/ethereum/cbc-casper/wiki/FAQ)
 
