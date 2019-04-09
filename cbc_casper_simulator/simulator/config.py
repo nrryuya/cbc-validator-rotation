@@ -17,7 +17,7 @@ class Config:
 
     @classmethod
     def default(cls) -> Config:
-        return Config(3, 50, 10, 10)
+        return Config(5, 50, 10, 10)
 
     @classmethod
     def from_yaml(cls, name) -> Config:
