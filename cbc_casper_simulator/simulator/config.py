@@ -8,7 +8,7 @@ class Config:
         validator_num: int,
         max_slot: int,
         checkpoint_interval: int,
-        rotation_ratio: int,
+        rotation_ratio: float,
     ):
         self.validator_num = validator_num
         self.max_slot = max_slot
@@ -17,7 +17,7 @@ class Config:
 
     @classmethod
     def default(cls) -> Config:
-        return Config(5, 59, 20, 10)
+        return Config(5, 59, 20, 0.1)
 
     @classmethod
     def from_yaml(cls, name) -> Config:

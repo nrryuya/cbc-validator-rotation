@@ -22,8 +22,7 @@ class Message:
         self.sender_slot: int = sender_slot
         self.receiver_slot: int = -1  # FIXME: Move this to Store
         self.clique_size: float = 0  # FIXME: Move this to Store
-        # TODO: implement
-        self.hash: int = r.randint(1, 100000000000000)
+        self.hash: int = r.randint(1, 100000000000000)  # FIXME: calc hash
 
     @classmethod
     def genesis(cls, sender: Validator) -> Message:

@@ -11,6 +11,7 @@ class LMDGhostEstimator:
 
     @classmethod
     def estimate(cls, state: State, justification: Justification) -> Block:
+        # FIXME: Rename this because this returns just the head of GHOST
         scores: Dict[Block, float] = cls.score(state, justification)
         store: Store = state.store
 
@@ -20,7 +21,7 @@ class LMDGhostEstimator:
             # If "tie" exists, choose the block with the smallest hash.
             best_block = max(store.children_blocks(
                 best_block), key=lambda block: (scores.get(block, 0), -block.hash))
-        return Block(best_block.hash)
+        return best_block
 
     @classmethod
     def score(cls, state: State, justification: Justification) -> Dict[Block, float]:

@@ -13,6 +13,7 @@ class ValidatorSet:
 
         # FIXME: Genesis block should be in states by default
         self.genesis = Message.genesis(r.choice(self.validators))
+        self.genesis.estimate.active_validators = validators
 
         # Add genesis message to all validators
         for validator in self.validators:

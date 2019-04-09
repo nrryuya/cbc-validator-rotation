@@ -17,7 +17,6 @@ class State:
             self.ticker = ticker
 
     def transition(self, message: Message) -> Result[Error, bool]:
-        # TODO: implement
         checked = self.check_message(message)
         if checked.is_err():
             return checked
