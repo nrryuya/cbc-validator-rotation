@@ -91,14 +91,14 @@ class Store:
     def genesis_block(self) -> Block:
         return self.genesis.estimate
 
-    def is_agreeing(self, block: Block, message: Message):
+    def is_agreeing(self, block: Block, message: Message) -> bool:
         """Returns True if self is an ancestor of block."""
+        if block.is_genesis():
+            return True
         head: Block = message.estimate
-        while True:
+        while not head.is_genesis():
             if head == block:
                 return True
-            if head.is_genesis():
-                break
             head = self.parent_block(head)
 
         return False
