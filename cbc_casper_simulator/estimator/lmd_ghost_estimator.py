@@ -28,11 +28,12 @@ class LMDGhostEstimator:
         scores: Dict[Block, float] = dict()
         store: Store = state.store
         for v, m in justification.latest_message_hashes.items():
-            current_block = store.to_block(m)
-            while not current_block.is_genesis():
-                scores[current_block] = scores.get(
-                    current_block, 0) + v.weight
+            current_block: Block = store.to_block(m)
+            while True:
+                if v in current_block.active_validators:
+                    scores[current_block] = scores.get(
+                        current_block, 0) + v.weight
+                if current_block.is_genesis():
+                    break
                 current_block = store.parent_block(current_block)
-            scores[store.genesis.estimate] = scores.get(
-                store.genesis.estimate, 0) + v.weight
         return scores
