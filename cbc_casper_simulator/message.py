@@ -26,7 +26,7 @@ class Message:
 
     @classmethod
     def genesis(cls, sender: Validator) -> Message:
-        return Message(sender, Block.genesis(), Justification(), 0)
+        return Message(sender, Block.genesis(), Justification(), -1)
 
     def is_genesis(self) -> bool:
         return self.estimate.is_genesis()
