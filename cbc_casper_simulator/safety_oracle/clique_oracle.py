@@ -38,7 +38,7 @@ class CliqueOracle:
                 continue
 
             v2_latest_message_hash = v1_msg.justification.latest_message_hashes[val2]
-            v2_msg_in_v1_view = self.state.store.parent_message(v2_latest_message_hash)
+            v2_msg_in_v1_view = self.state.store.messages[v2_latest_message_hash]
             if not self.state.store.is_agreeing(self.block, v2_msg_in_v1_view):
                 continue
 
@@ -48,7 +48,7 @@ class CliqueOracle:
                 continue
 
             v1_latest_message_hash = v2_msg.justification.latest_message_hashes[val1]
-            v1_msg_in_v2_view = self.state.store.parent_message(v1_latest_message_hash)
+            v1_msg_in_v2_view = self.state.store.messages[v1_latest_message_hash]
             if not self.state.store.is_agreeing(self.block, v1_msg_in_v2_view):
                 continue
 
