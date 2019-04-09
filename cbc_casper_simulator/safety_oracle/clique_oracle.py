@@ -76,7 +76,7 @@ class CliqueOracle:
         """Finds the biggest clique of validators committed to target estimate."""
 
         # Do not have finality if less than half have candidate_estimate.
-        if sum({v.weight for v in self.candidates}) <= sum({v.weight for v in self.validators}) / 2:
+        if sum([v.weight for v in self.candidates]) <= sum([v.weight for v in self.validators]) / 2:
             return set(), 0
 
         edges: List[Tuple[Validator, Validator]] = self._collect_edges()
@@ -87,7 +87,7 @@ class CliqueOracle:
         max_clique = []
         max_weight = 0
         for clique in cliques:
-            test_weight = sum({v.weight for v in clique})
+            test_weight = sum([v.weight for v in clique])
             if test_weight > max_weight:
                 max_clique = clique
                 max_weight = test_weight
