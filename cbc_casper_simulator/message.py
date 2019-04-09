@@ -14,13 +14,13 @@ class Message:
         sender: Validator,
         estimate: Block,
         justification: Justification,
-        sender_slot: int  # FIXME: Remove this. We have broadcast_slot_to_message.
+        sender_slot: int  # FIXME: Move this to Store
     ):
         self.sender: Validator = sender
         self.estimate: Block = estimate
         self.justification: Justification = justification
         self.sender_slot: int = sender_slot
-        self.receiver_slot: int = -1  # FIXME: Remove this. We have arrival_slot_to_messages.
+        self.receiver_slot: int = -1  # FIXME: Move this to Store
         # TODO: implement
         self.hash: int = r.randint(1, 100000000000000)
 

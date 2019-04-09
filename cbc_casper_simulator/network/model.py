@@ -6,6 +6,9 @@ from cbc_casper_simulator.network.packet import Packet
 from cbc_casper_simulator.network.delay import RandomDelay as Delay
 from typing import Dict, List
 
+DELAY_MIN = 0
+DELAY_MAX = 3
+
 
 class Model:
     def __init__(self, validator_set: ValidatorSet, validator_num: int, ticker: Ticker = None):
@@ -22,7 +25,7 @@ class Model:
         current_slot = self.ticker.current()
         packet = Packet(message, sender, receiver, current_slot)
         # TODO: Decide delay w.r.t. network topology
-        arrival_slot = packet.slot + Delay.get(1, 2)
+        arrival_slot = packet.slot + Delay.get(DELAY_MIN, DELAY_MAX)
         self.add_message_to_be_arrived(receiver, arrival_slot, packet.message)
 
     def receive(self, receiver: Validator):
@@ -38,8 +41,9 @@ class Model:
                 self.send(message, sender, receiver)
 
     def validator_rotation(self, rotation_ratio: int):
+        # FIXME: Now, we assume Older validators exit for simplicity of visualization
         validators: List[Validator] = \
-            self.validator_set.choose(int(self.validator_num * (1 - rotation_ratio / 100)))
+            self.validator_set.validators[int(self.validator_num * rotation_ratio / 100) + 1:]
 
         for i in range(self.validator_num - len(validators)):
             validator = Validator("v{}.{}".format(self.ticker.current(), i), 1.0, self.ticker)
@@ -48,12 +52,11 @@ class Model:
             res = validator.add_message(self.validator_set.genesis)
             assert res.is_ok(), res.value
 
-            delay = Delay.get(1, 2)
             # Do simulation of message arrival from the start for new validator
             for past_slot in range(self.ticker.current()):
                 past_message = self.broadcast_slot_to_message[past_slot]
                 # Sending in past
-                arrival_slot = past_slot + Delay.get(1, 2)
+                arrival_slot = past_slot + Delay.get(DELAY_MIN, DELAY_MAX)
                 self.add_message_to_be_arrived(validator, arrival_slot, past_message)
 
                 # Receiving in past
