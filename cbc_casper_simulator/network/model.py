@@ -46,8 +46,6 @@ class Model:
     def update_clique_size(self):
         for validator in self.validator_set.validators:
             for message in validator.state.store.messages.values():
-                if message.is_genesis():
-                    continue
                 clique_oracle = CliqueOracle(message.estimate, validator.state)
                 message.clique_size = clique_oracle.biggest_clique_weight()
 
