@@ -50,7 +50,7 @@ class Model:
                 message.clique_size = clique_oracle.biggest_clique_weight()
 
     def validator_rotation(self, validators: List[Validator], name_prefix: str) -> List[Validator]:
-        # FIXME: Now, we assume older validators exit for simplicity of visualization
+        # NOTE: Now, we assume older validators exit for simplicity of visualization
         validators: List[Validator] = validators[int(self.validator_num * self.rotation_ratio) + 1:]
 
         new_validators: List[Validator] = []
@@ -69,7 +69,7 @@ class Model:
                 self.add_message_to_be_arrived(validator, arrival_slot, past_message)
 
                 # Receiving in past
-                messages = self.arrival_slot_to_messages.get(validator, dict()).get(self.ticker.current(), [])
+                messages = self.arrival_slot_to_messages.get(validator, dict()).get(past_slot, [])
                 for message in messages:
                     res = validator.add_message(message)
                     if not res.is_ok():
