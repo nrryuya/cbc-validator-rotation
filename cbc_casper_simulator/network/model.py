@@ -51,7 +51,7 @@ class Model:
                 message.clique_size = clique_oracle.biggest_clique_weight()
 
     def validator_rotation(self, rotation_ratio: int):
-        # FIXME: Now, we assume Older validators exit for simplicity of visualization
+        # FIXME: Now, we assume older validators exit for simplicity of visualization
         validators: List[Validator] = \
             self.validator_set.validators[int(self.validator_num * rotation_ratio / 100) + 1:]
 
@@ -91,6 +91,7 @@ class Model:
         if receiver in self.arrival_slot_to_messages:
             self.arrival_slot_to_messages[receiver][arrival_slot] = \
                 self.arrival_slot_to_messages[receiver].get(arrival_slot, []) + [message]
+            return
         self.arrival_slot_to_messages[receiver] = {arrival_slot: [message]}
 
     def dump(self):
