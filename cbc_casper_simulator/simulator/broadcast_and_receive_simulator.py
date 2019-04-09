@@ -24,7 +24,7 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
         i = self.ticker.current()
 
         # TODO: Is it correct to do validator rotation from Simulator object?
-        if i % self.config.checkpoint_interval == 0:
+        if i > 0 and i % self.config.checkpoint_interval == 0:
             self.network.validator_rotation(self.config.rotation_ratio)
 
         if i > self.config.max_slot:
