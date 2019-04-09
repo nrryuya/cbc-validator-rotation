@@ -1,9 +1,12 @@
 from __future__ import annotations
-from typing import Iterator
+from typing import Iterator, Dict
+import random as r
+
 from cbc_casper_simulator.validator_set import ValidatorSet
 from cbc_casper_simulator.network.model import Model as NetworkModel
 from cbc_casper_simulator.util.ticker import Ticker
 from cbc_casper_simulator.simulator.config import Config
+from cbc_casper_simulator.message import Message
 
 
 class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
@@ -11,21 +14,19 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
     A simulator where at each slot, a single validator chosen randomly sends a message and all validators receive
     messages w.r.t. network latency.
     """
+
     def __init__(self, config: Config):
         self.config = config
         self.ticker = Ticker()
         self.network = NetworkModel(ValidatorSet.with_equal_weight(config.validator_num, self.ticker),
-                                    config.validator_num, self.ticker)
+                                    config.validator_num, config.rotation_ratio, self.ticker)
+        self.checkpoint_rotation_count: Dict[int, int] = dict()
 
     def __iter__(self):
         return self
 
     def __next__(self) -> NetworkModel:
         i = self.ticker.current()
-
-        # TODO: Is it correct to do validator rotation from Simulator object?
-        if i % self.config.checkpoint_interval == 0:
-            self.network.validator_rotation(self.config.rotation_ratio)
 
         if i > self.config.max_slot:
             raise StopIteration
@@ -38,11 +39,24 @@ class BroadCastAndReceiveSimulator(Iterator[NetworkModel]):
         return self.network
 
     def broadcast_from_random_validator(self):
-        sender = self.network.validator_set.choose_one()
-        message = sender.create_message()
-        res = sender.add_message(message)
-        assert res.is_ok(), res.value
-        self.network.broadcast(message, sender)
+        rn: int = r.randint(0, self.config.validator_num - 1)
+        for validator in self.network.validator_set.validators:
+            message: Message = validator.create_message(rn)
+            if not message:  # This validator is not the proposer in this slot
+                # FIXME: Remove this validator ("go offline") if she is confident of the success of exit
+                continue
+            if message.estimate.height > 0 and message.estimate.height % self.config.checkpoint_interval == 0:
+                self.checkpoint_rotation_count.setdefault(message.estimate.height, 0)
+                message.estimate.active_validators = self.network.validator_rotation(
+                    message.estimate.active_validators,
+                    "{}.{}".format(int(message.estimate.height / self.config.checkpoint_interval),
+                                   self.checkpoint_rotation_count[message.estimate.height]))
+
+                self.checkpoint_rotation_count[message.estimate.height] += 1
+
+            res = validator.add_message(message)
+            assert res.is_ok(), res.value
+            self.network.broadcast(message, validator)
 
     def all_validators_receive_messages(self):
         for receiver in self.network.validator_set.all():

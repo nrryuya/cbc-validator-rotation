@@ -8,11 +8,11 @@ import random as r
 class ValidatorSet:
     def __init__(self, validators: List[Validator]):
         assert len(validators) > 0, "At least one validator is required."
-        # assert len(validators) > 0, "At least one validator is required."
         self.validators = validators
 
         # FIXME: Genesis block should be in states by default
         self.genesis = Message.genesis(r.choice(self.validators))
+        self.genesis.estimate.active_validators = validators
 
         # Add genesis message to all validators
         for validator in self.validators:
@@ -42,12 +42,12 @@ class ValidatorSet:
     def with_random_weight(cls, num, ticker) -> ValidatorSet:
         validators: List[Validator] = []
         for i in range(num):
-            validators.append(Validator("v0.{}".format(i), r.random(), ticker))
+            validators.append(Validator("v0.0.{}".format(i), r.random(), ticker))
         return ValidatorSet(validators)
 
     @classmethod
     def with_equal_weight(cls, num, ticker) -> ValidatorSet:
         validators: List[Validator] = []
         for i in range(num):
-            validators.append(Validator("v0.{}".format(i), 1.0, ticker))
+            validators.append(Validator("v0.0.{}".format(i), 1.0, ticker))
         return ValidatorSet(validators)

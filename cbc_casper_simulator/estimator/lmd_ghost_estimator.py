@@ -11,6 +11,7 @@ class LMDGhostEstimator:
 
     @classmethod
     def estimate(cls, state: State, justification: Justification) -> Block:
+        # FIXME: Rename this because this returns just the head of GHOST
         scores: Dict[Block, float] = cls.score(state, justification)
         store: Store = state.store
 
@@ -20,22 +21,19 @@ class LMDGhostEstimator:
             # If "tie" exists, choose the block with the smallest hash.
             best_block = max(store.children_blocks(
                 best_block), key=lambda block: (scores.get(block, 0), -block.hash))
-        return Block(best_block.hash)
-
-    @classmethod
-    def verify(cls, state: State, block: Block, justification: Justification) -> bool:
-        return cls.estimate(state, justification) == block
+        return best_block
 
     @classmethod
     def score(cls, state: State, justification: Justification) -> Dict[Block, float]:
         scores: Dict[Block, float] = dict()
         store: Store = state.store
         for v, m in justification.latest_message_hashes.items():
-            current_block = store.to_block(m)
-            while not current_block.is_genesis():
-                scores[current_block] = scores.get(
-                    current_block, 0) + v.weight
+            current_block: Block = store.to_block(m)
+            while True:
+                if v in current_block.active_validators:
+                    scores[current_block] = scores.get(
+                        current_block, 0) + v.weight
+                if current_block.is_genesis():
+                    break
                 current_block = store.parent_block(current_block)
-            scores[store.genesis.estimate] = scores.get(
-                store.genesis.estimate, 0) + v.weight
         return scores

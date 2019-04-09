@@ -94,9 +94,11 @@ class Store:
     def is_agreeing(self, block: Block, message: Message):
         """Returns True if self is an ancestor of block."""
         head: Block = message.estimate
-        while not head.is_genesis():
+        while True:
             if head == block:
                 return True
+            if head.is_genesis():
+                break
             head = self.parent_block(head)
 
         return False
