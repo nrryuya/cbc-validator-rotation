@@ -17,7 +17,7 @@ class Validator:
     ):
         self.name: str = name
         self.weight: float = initial_weight
-        self.state = State(ticker)
+        self.state = State(ticker)  # FIXME: How about passing ticker to add_message and remove ticker from State.
         # TODO: implement
         self.hash: int = r.randint(1, 100000000000000)
 
@@ -43,7 +43,7 @@ class Validator:
         return {
             "name": self.name,
             "state": self.state.dump(),
-            "current_slot": self.state.ticker.current()
+            "current_slot": self.state.ticker.current()  # FIXME: Maybe we don't need this
         }
 
     def __eq__(self, other: Validator):
