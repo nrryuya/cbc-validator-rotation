@@ -2,7 +2,7 @@
 
 Simulation of validator rotation in CBC Casper @EDCON HACK 2019
 
-Also see [our visualizer](https://github.com/akinama/cbc-validator-rotation-visualizer)!
+Also see [our visualizer](https://github.com/akinama/cbc-validator-rotation-visualizer) and [presentation](https://docs.google.com/presentation/d/1DdFRdKTHcsHPJLUk0LbmniIYuzNdyzHllcEA3TtM_wM)!
 
 ## Introduction
 CBC Casper is one of the cutting-edge research of blockchain consensus protocol.
